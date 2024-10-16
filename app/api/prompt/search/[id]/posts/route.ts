@@ -7,8 +7,9 @@ export const GET = async (request: Request, {params}: { params: { id: string } }
   try {
     await connectToDB();
 
-    const prompts = await Prompt.find({creator: params.id}).populate('creator');
-    console.log(params, 'params');
+    const prompts = await Prompt.find({prompt: {$regex: params.id}}).populate('creator');
+    console.log(prompts, 'PROMPTS');
+    console.log(params, 'PARAMS');
 
     return new Response(JSON.stringify(prompts), {status:200})
   } catch (error) {

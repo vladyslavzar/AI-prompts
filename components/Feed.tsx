@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import PromptCard from './PromptCard';
 
 interface Post {
@@ -36,15 +36,49 @@ const PromptCardList = ({ data, handleTagClick }: PromptCardListProps) => {
   )
 }
 
+const useDebounce = (value: string, delay = 500) => {
+  const [debouncedValue, setDebouncedValue] = useState("");
+  const timerRef = useRef<null | ReturnType<typeof setTimeout>>(null);
+
+  useEffect(() => {
+    timerRef.current = setTimeout(() => setDebouncedValue(value), delay);
+
+    return () => {
+      if (timerRef.current !== null) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}; 
+
 const Feed = () => {
   const [searchText, setSearchText] = useState('');
   const [posts, setPosts] = useState([]);
+  const debouncedSearchText = useDebounce(searchText, 500);
+  
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
+
   }
 
   useEffect(() => {
+    if (debouncedSearchText) {
+      const fetchPosts = async () => {
+        const response = await fetch(`/api/prompt/search/${debouncedSearchText}/posts`);
+        const data = await response.json();
+        console.log(data, 'DATA');
+
+        setPosts(data);
+      }
+
+      fetchPosts();
+      return;
+    }
+    
+
     const fetchPosts = async () => {
       const response = await fetch('/api/prompt');
       const data = await response.json();
@@ -53,7 +87,7 @@ const Feed = () => {
     }
 
     fetchPosts();
-  }, [])
+  }, [debouncedSearchText])
 
   return (
     <section className="feed">

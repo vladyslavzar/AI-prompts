@@ -11,8 +11,8 @@ const Home = () => {
       <p className="desc text-center">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod veniam doloremque dolore doloribus molestiae ad, asperiores placeat deleniti eius repellat natus enim dolorum itaque, accusamus, optio unde. Error, molestiae expedita.
       </p>
-
       <Feed/>
+      
     </section>
   )
 };
