@@ -5,6 +5,7 @@ import '@/styles/global.css';
 
 import Nav from '@/components/Nav';
 import Provider from '@/components/Provider';
+import { Suspense } from 'react';
 
 export const metadata = {
   title: 'AI Prompts',
@@ -27,8 +28,10 @@ export default function RootLayout({
           
           <main className="app">
             <Nav/>
-            
-            {children}
+            <Suspense>
+              { children } 
+            </Suspense>
+
           </main>
         </Provider>
       </body>
