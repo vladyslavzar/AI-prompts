@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import type { DefaultSession } from 'next-auth';
+import {Post} from '@/app/types';
 
 declare module 'next-auth' {
   interface Session {
@@ -11,11 +12,6 @@ declare module 'next-auth' {
       id: string;
     };
   }
-}
-
-interface Post {
-  _id: string;
-  [key: string]: unknown;
 }
 
 import Profile from '@/components/Profile';
@@ -43,7 +39,6 @@ const MyProfile = () => {
   }
 
   const handleDelete = async (post: Post) => {
-    console.log('handleDelete');
     const hasConfirmed = confirm('Are you sure you want to delete this post?');
 
     if (hasConfirmed) {
@@ -51,7 +46,6 @@ const MyProfile = () => {
         const response = await fetch(`/api/prompt/${post._id.toString()}`, {
           method: 'DELETE'
         });
-        console.log(response, 'DEL RESPONSE');
 
         if (response.ok) {
           setPosts(posts.filter((p: Post) => p._id !== post._id));

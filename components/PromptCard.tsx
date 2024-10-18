@@ -3,18 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { usePathname } from "next/navigation";
-
-interface Post {
-  prompt: string;
-  tag: string;
-  creator: {
-    image: string;
-    username: string;
-    email: string;
-    _id: string;
-  };
-}
+import { usePathname, useRouter } from "next/navigation";
+import { Post } from "@/app/types";
 
 interface PromptCardProps {
   post: Post;
@@ -27,6 +17,7 @@ const PromptCard: React.FC<PromptCardProps> = ({ post, handleTagClick, handleEdi
   const [copied, setCopied] = useState('');
   const { data: session } = useSession();
   const pathName = usePathname();
+  const router = useRouter();
 
   const handleCopy = () => {
     setCopied(post.prompt);
@@ -34,12 +25,16 @@ const PromptCard: React.FC<PromptCardProps> = ({ post, handleTagClick, handleEdi
     setTimeout(() => setCopied(""), 3000);
   }
 
+  const handleCreatorClick = () => {
+    router.push(`/profile/${post.creator._id}`);
+  }
+
   return (
     <div className="prompt_card">
       <div className="flex justify-between items-start gap-5">
-        <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer">
+        <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer" onClick={handleCreatorClick}>
           <Image
-            src={post.creator.image}
+            src={post.creator.image || '/assets/images/default-profile.svg'}
             alt="user_image"
             width={40}
             height={40}
@@ -53,7 +48,7 @@ const PromptCard: React.FC<PromptCardProps> = ({ post, handleTagClick, handleEdi
         </div>
         <div className="copy_btn" onClick={handleCopy}>
             <Image
-              src={copied === post.prompt ? '/assets/icons/tick.svg' : 'assets/icons/copy.svg'}
+              src={copied === post.prompt ? '/assets/icons/tick.svg' : '/assets/icons/copy.svg'}
               alt="Copy button"
               width={12}
               height={12}

@@ -2,18 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import PromptCard from './PromptCard';
-
-interface Post {
-  _id: string;
-  prompt: string;
-  tag: string;
-  creator: {
-    image: string;
-    username: string;
-    email: string;
-    _id: string;
-  };
-}
+import {Post} from '@/app/types';
 
 interface PromptCardListProps {
   data: Post[];
@@ -61,13 +50,26 @@ const Feed = () => {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
+  }
 
+  const handleTagClick = (tag: string) => {
+    setSearchText(`#${tag}`);
   }
 
   useEffect(() => {
     if (debouncedSearchText) {
+      
       const fetchPosts = async () => {
-        const response = await fetch(`/api/prompt/search/${debouncedSearchText}/posts`);
+        if (debouncedSearchText[0] === '#') {
+          const response = await fetch(`/api/tag/${debouncedSearchText.slice(1)}/posts`);
+          const data = await response.json();
+          console.log(data, 'DATA');
+
+          setPosts(data);
+          return;
+        }
+
+        const response = await fetch(`/api/search/${debouncedSearchText}/posts`);
         const data = await response.json();
         console.log(data, 'DATA');
 
@@ -94,16 +96,17 @@ const Feed = () => {
       <form action="" className="relative w-full flex-center">
         <input 
           type="text"
-          placeholder='Search for a tag or a username'
+          placeholder='Search for a prompt or a tag...'
           value={searchText}
           onChange={handleSearchChange}
+          style={{color: `${searchText[0] === "#" ? '#2563eb' : 'black'}`}}
           required
           className="search_input peer"
         />
       </form>
       <PromptCardList
         data={posts}
-        handleTagClick={() => {}}
+        handleTagClick={handleTagClick}
       />
     </section>
   )

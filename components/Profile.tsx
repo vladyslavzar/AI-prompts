@@ -1,14 +1,14 @@
 
 import PromptCard from "./PromptCard";
-
+import { Post } from "@/app/types";
 import { FC } from "react";
 
 interface ProfileProps {
   name: string;
   desc: string;
-  data: Array<{ _id: string; prompt: string; tag: string; creator: { image: string; username: string; email: string; _id: string } }>;
-  handleEdit?: (post: { _id: string; [key: string]: unknown }) => void;
-  handleDelete?: (post: { _id: string; [key: string]: unknown }) => void;
+  data: Array<Post>;
+  handleEdit?: (post: Post) => void;
+  handleDelete?: (post: Post) => void;
 }
 
 const Profile: FC<ProfileProps> = ({ name, desc, data, handleEdit, handleDelete }) => {
@@ -30,6 +30,7 @@ const Profile: FC<ProfileProps> = ({ name, desc, data, handleEdit, handleDelete 
             handleDelete={() => handleDelete && handleDelete(post)}
           />
         ))}
+        {data.length === 0 && (<h2 className="head_text text-left">No prompts found !</h2>)}
       </div>
     </section>
   )
