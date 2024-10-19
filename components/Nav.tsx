@@ -13,7 +13,6 @@ import {
 
 const Nav = () => {
   const { data: session } = useSession();
-  console.log(session, "NAV SESSION");
 
   const [providers, setProviders] = useState<Record<string,ClientSafeProvider> | null>(null);
   const [toggleDropDown, setToggleDropDown] = useState(false);
