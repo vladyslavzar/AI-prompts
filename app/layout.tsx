@@ -12,23 +12,18 @@ export const metadata = {
   description: 'Discover & Share Ai Prompts',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}
-) {
+export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang="en">
       <body>
-        <Provider session={null} >
+        <Provider>
           <div className="main">
             <div className="gradient" />
           </div>
           
           <main className="app">
             <Nav/>
-            <Suspense>
+            <Suspense >
               { children } 
             </Suspense>
 
